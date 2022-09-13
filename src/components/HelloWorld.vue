@@ -1,5 +1,6 @@
 <template>
   <p>{{ error }}</p>
+  <Plotly :data="plotData" :layout="plotLayout" />
   <div v-if="position">
     <p>Noorderbreedte: {{ position.latitude.asDegreesMinutes }}</p>
     <p>Oosterlengte: {{ position.longitude.asDegreesMinutes }}</p>
@@ -16,7 +17,6 @@
       km/u)
     </p>
   </div>
-  <Plotly :data="plotData" :layout="plotLayout" />
   <table>
     <thead>
       <tr>
@@ -38,12 +38,12 @@
 </template>
 <script>
 import gps from '../gps.js';
-import Plotly from './Plotly.vue'
+import Plotly from './Plotly.vue';
 
 export default {
   name: 'HelloWorld',
   components: {
-    Plotly
+    Plotly,
   },
   data: function () {
     return {
@@ -54,13 +54,40 @@ export default {
       watchId: null,
       plotData: [
         {
-          x: [1, 2, 3, 4],
-          y: [10, 15, 13, 17],
+          r: [],
+          theta: [],
           type: 'scatterpolar',
+          mode: 'markers',
+        },
+        {
+          r: [],
+          theta: [],
+          type: 'scatterpolar',
+          subplot: 'polar2'
         },
       ],
       plotLayout: {
-        title: 'My graph',
+        polar: {
+          angularaxis: {
+            direction: 'clockwise',
+            period: 10
+          },
+          radialaxis: {
+            visible: true,
+            angle: 90,
+            tickangle: 90,
+          },
+        },
+        polar2: {
+          angularaxis: {
+            direction: 'clockwise',
+          },
+          radialaxis: {
+            visible: true,
+            angle: 90,
+            tickangle: 90,
+          },
+        }
       },
     };
   },
@@ -94,6 +121,33 @@ export default {
       }
       this.position = pos;
       this.positions.push(pos);
+
+      this.updatePlotData();
+      this.updatePlotData2();
+    },
+    updatePlotData: function () {
+      if (this.positions.length < 2) {
+        return;
+      }
+
+      let geodesics = this.getGeodesics();
+      this.plotData[0].r = geodesics.map((g) => g.speed);
+      this.plotData[0].theta = geodesics.map((g) => g.cog);
+    },
+    updatePlotData2: function () {
+      if (this.positions.length < 2) {
+        return;
+      }
+
+      let tos = this.positions.slice(1);
+      let geodesics = tos.map((to) => new gps.Geodesic(this.positions[0], to));
+      this.plotData[1].r = geodesics.map((g) => g.distance);
+      this.plotData[1].theta = geodesics.map((g) => g.cog);
+    },
+    getGeodesics: function () {
+      let froms = this.positions.slice(0, -1);
+      let tos = this.positions.slice(1);
+      return froms.map((from, i) => new gps.Geodesic(from, tos[i]));
     },
   },
 };
