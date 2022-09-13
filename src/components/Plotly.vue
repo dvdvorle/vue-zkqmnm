@@ -1,12 +1,11 @@
 <template>
   <div :id="id" v-resize:debounce.100="onResize" />
-  hi
 </template>
 <script>
-import Plotly from 'plotly.js';
+import Plotly from 'https://cdn.plot.ly/plotly-2.14.0.min.js';
 import events from './events.js';
 import methods from './methods.js';
-import { camelize } from '@/utils/helper';
+import { camelize } from '../utils/helper';
 
 const directives = {};
 if (typeof window !== 'undefined') {
