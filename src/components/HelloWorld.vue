@@ -9,9 +9,13 @@
   <div v-if="geodesic">
     <p>Cog: {{ geodesic.cog }}°</p>
     <p>Afstand: {{ geodesic.distance.toFixed(2) }}m</p>
-    <p>Snelheid: {{ geodesic.speed.toFixed(2) }} m/s ({{ (geodesic.speed * 3.6).toFixed(2) }} km/u)</p>
+    <p>
+      Snelheid: {{ geodesic.speed.toFixed(2) }} m/s ({{
+        (geodesic.speed * 3.6).toFixed(2)
+      }}
+      km/u)
+    </p>
   </div>
-  <Plotly :data="plotData" :layout="plotLayout" :display-mode-bar="false"></Plotly>
   <table>
     <thead>
       <tr>
@@ -33,13 +37,9 @@
 </template>
 <script>
 import gps from '../gps.js';
-import { Plotly } from 'vue-plotly'
 
 export default {
   name: 'HelloWorld',
-  components: {
-    Plotly
-  },
   data: function () {
     return {
       error: null,
@@ -47,14 +47,16 @@ export default {
       positions: [],
       geodesic: null,
       watchId: null,
-      plotData:[{
-        x: [1,2,3,4],
-        y: [10,15,13,17],
-        type:"scatter"
-      }],
+      plotData: [
+        {
+          x: [1, 2, 3, 4],
+          y: [10, 15, 13, 17],
+          type: 'scatter',
+        },
+      ],
       plotLayout: {
-        title: "My graph"
-      }
+        title: 'My graph',
+      },
     };
   },
   mounted() {
