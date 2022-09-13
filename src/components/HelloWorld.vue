@@ -16,6 +16,7 @@
       km/u)
     </p>
   </div>
+  <Plotly :data="plotData" :layout="plotLayout" />
   <table>
     <thead>
       <tr>
@@ -37,9 +38,13 @@
 </template>
 <script>
 import gps from '../gps.js';
+import Plotly from './Plotly.vue'
 
 export default {
   name: 'HelloWorld',
+  components: {
+    Plotly
+  },
   data: function () {
     return {
       error: null,
@@ -51,7 +56,7 @@ export default {
         {
           x: [1, 2, 3, 4],
           y: [10, 15, 13, 17],
-          type: 'scatter',
+          type: 'scatterpolar',
         },
       ],
       plotLayout: {
