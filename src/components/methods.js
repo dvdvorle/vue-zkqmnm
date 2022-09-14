@@ -1,4 +1,4 @@
-import Plotly from 'plotly.js';
+import Plotly from 'https://cdn.plot.ly/plotly-2.14.0.min.js';
 
 const plotlyFunctions = [
   'restyle',
